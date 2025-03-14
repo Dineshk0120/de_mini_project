@@ -1,0 +1,41 @@
+version: 2
+
+sources:
+  - name: hotel_booking
+    database: de_usecase  
+    schema: raw  
+
+    tables:
+      - name: customers
+        description: "Raw customer data ingested via ADF"
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+              - unique
+
+      - name: products
+        description: "Product data"
+        columns:
+          - name: product_id
+            tests:
+              - not_null
+              - unique
+              
+      - name: transactions
+        description: "Customer transactions data"
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+          - name: product_id
+            tests:
+              - not_null
+
+      - name: country_region
+        description: "customer country region data"
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+       
