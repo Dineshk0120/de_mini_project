@@ -1,0 +1,93 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('name')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data2",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeV2Sink",
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand"
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobStorage1",
+										"type": "LinkedServiceReference"
+									},
+									"path": "datasets"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_sqldb",
+									"type": "DatasetReference",
+									"parameters": {
+										"name": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_snowflake",
+									"type": "DatasetReference",
+									"parameters": {
+										"tablename": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"name": {
+				"type": "Array",
+				"defaultValue": [
+					"CUSTOMERS",
+					"PRODUCTS",
+					"TRANSACTIONS",
+					"COUNTRY_REGION"
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-14T13:36:01Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
